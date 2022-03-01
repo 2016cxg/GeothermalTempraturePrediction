@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>GIS_Geothermal</title>
+    <link rel="stylesheet" href="https://cache.amap.com/lbs/static/main1119.css"/>
+    <script type="text/javascript"
+            src="https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值"></script>
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/> 
+    <style>
+        html,body,#container{
+            margin:0;
+            height:100%;
+        }
+        .input-item-text{
+            width:7rem;
+        }
+    </style>
+  
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=ddb4718923a922a569a1484c59a47ed7"></script>
+</head>
+  
+<body>
+<div id="container"></div>
+<div class="input-card">
+    <label style='color:grey'>计算地温（请先选择一个位置标记）</label>
+    <div class="input-item">
+            <div class="input-item-prepend">
+                <span class="input-item-text" >输入深度</span>
+            </div>
+			<input id='depth' type="text"  >
+      		<span>km</span>
+    </div>
+  	<hr >
+    <div class="input-item">
+            <div class="input-item-prepend">
+                <span class="input-item-text" >计算结果</span>
+            </div>
+            <input id='district' type="text"  >
+      		<span>&#8451</span>
+    </div>
+  	<hr>
+    <input id="draw" type="button" class="btn" value="计算" />
+</div>
+  
+ 
+  
+<script type="text/javascript">
+  	var selPos , depth ;
+  
+    //初始化地图对象，加载地图
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        features:['bg','road'],
+    });
+    var lnglats = [
+        [116.368904, 39.923423],
+        [116.382122, 39.921176],
+        [116.387271, 39.922501],
+        [116.398258, 39.914600]
+    ];
+    var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+    for (var i = 0, marker; i < lnglats.length; i++) {
+        var marker = new AMap.Marker({
+            position: lnglats[i],
+            map: map
+        });
+        marker.content = '已选中第' + (i + 1) + '个位置标记';
+      	marker.iter = i+1 ;
+      
+        marker.on('click', markerClick);
+       // marker.emit('click', {target: marker});
+    }
+    function markerClick(e) {
+      	selPos = e.target.iter ;
+      
+        infoWindow.setContent(e.target.content);
+        infoWindow.open(map, e.target.getPosition());
+    }  
+  
+	function drawBounds() {
+        const xhttp = new XMLHttpRequest() ;
+        var data={
+            selPos:selPos,
+            depth: document.getElementById('depth').value,
+        }
+        xhttp.onload = function(){
+            const obj = JSON.parse(this.responseText) ;
+            console.log( obj )
+            document.getElementById('district').value = obj['temperature'] ;
+        }
+        // xhttp.open('GET', 'data') ;
+        xhttp.open("POST", "cal");
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(JSON.stringify(data)) ;
+    }
+  
+  	document.getElementById('draw').onclick = drawBounds;
+    map.setFitView();
+</script>
+</body>
+</html>

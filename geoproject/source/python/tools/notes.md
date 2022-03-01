@@ -1,0 +1,4 @@
+convertPdf2Image：将pdf转成image图片
+
+interactWithPaintTofFindAPixel：结合windows画图软件查看一个像素位置和RGB数值
+

@@ -1,0 +1,2 @@
+1. 运行getgrid.cpp获得gridfile.txt，这个文件在经纬度坐标转地图上的坐标时有用，所以要先运行getgrid.cpp来获得gridfile.txt文件
+2. coor2grid.cpp文件作用时用来将经纬度坐标转换成地图坐标，转换出的结果可以在output夹里的图片看到。
